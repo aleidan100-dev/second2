@@ -1,0 +1,463 @@
+<title>Commission Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one long page with a sticky section nav; a ledger-style program list, a calculator that reads like a receipt, a short quiz, and a launch checklist. */
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --fg: #12202e;
+  --muted: #5a6b7b;
+  --line: #d3dbe3;
+  --accent: #0a7d63;
+  --accent-fg: #ffffff;
+  --accent-soft: #d8efe8;
+  --money: #b4690e;
+  --money-soft: #f6e6cf;
+  --warn: #a3342b;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1721; --surface: #16222f; --fg: #e6edf3; --muted: #93a4b4; --line: #2a3a4a;
+    --accent: #3fc9a2; --accent-fg: #06251c; --accent-soft: #14362e;
+    --money: #efb35c; --money-soft: #3a2b14; --warn: #ff8f84;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1721; --surface: #16222f; --fg: #e6edf3; --muted: #93a4b4; --line: #2a3a4a;
+  --accent: #3fc9a2; --accent-fg: #06251c; --accent-soft: #14362e;
+  --money: #efb35c; --money-soft: #3a2b14; --warn: #ff8f84;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.6rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 3.6vw, 2.1rem); font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* header */
+.hero { padding-block: 40px 28px; display: grid; gap: 20px; grid-template-columns: 1.3fr 1fr; align-items: end; }
+.hero > * { min-width: 0; }
+.hero p.lead { font-size: 1.1rem; color: var(--muted); max-width: 46ch; margin-top: 14px; }
+.flow { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 0; }
+.flow-row { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding-block: 10px; border-top: 1px dashed var(--line); }
+.flow-row:first-child { border-top: 0; }
+.flow-row b { font-family: var(--font-mono); font-weight: 500; color: var(--accent); }
+.flow-row span { font-size: 0.95rem; }
+.flow-title { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-bottom: 6px; }
+
+/* nav */
+nav.tabs {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  display: flex; gap: 4px; overflow-x: auto; padding-block: 8px;
+}
+nav.tabs a {
+  white-space: nowrap; text-decoration: none; color: var(--fg); font-weight: 500; font-size: 0.92rem;
+  padding: 8px 14px; border-radius: 6px;
+}
+nav.tabs a:hover { background: var(--accent-soft); }
+
+section { padding-block: 44px 8px; scroll-margin-top: 64px; }
+.sec-head { display: grid; gap: 8px; margin-bottom: 22px; }
+.sec-head p { color: var(--muted); max-width: 62ch; }
+
+/* basics */
+.basics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.basics > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; min-width: 0; }
+.basics h3 { margin-bottom: 8px; }
+.basics p { color: var(--muted); font-size: 0.95rem; }
+.models { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.model { padding: 14px 0; border-top: 2px solid var(--fg); min-width: 0; }
+.model b { font-family: var(--font-mono); font-size: 0.85rem; color: var(--money); }
+.model p { font-size: 0.93rem; color: var(--muted); margin-top: 4px; }
+
+/* programs */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.chip {
+  font: inherit; font-size: 0.88rem; padding: 6px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.plist { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.prow { display: grid; grid-template-columns: 1.1fr 1.6fr auto; gap: 18px; padding: 18px; border-top: 1px solid var(--line); align-items: center; }
+.prow:first-child { border-top: 0; }
+.prow > * { min-width: 0; }
+.prow h3 { margin-bottom: 4px; }
+.tag { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); margin-right: 6px; }
+.tag.m { background: var(--money-soft); color: var(--money); }
+.prow p { color: var(--muted); font-size: 0.93rem; }
+.btn {
+  display: inline-block; text-decoration: none; font: inherit; font-weight: 600; font-size: 0.92rem;
+  padding: 10px 18px; border-radius: 8px; background: var(--accent); color: var(--accent-fg); border: 0; cursor: pointer; white-space: nowrap;
+}
+.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.note { margin-top: 14px; font-size: 0.88rem; color: var(--muted); max-width: 70ch; }
+.cfg { margin-top: 14px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: 10px; font-size: 0.9rem; color: var(--muted); }
+.cfg code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg); }
+
+/* calculator */
+.calc { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+.calc > * { min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+.field { display: grid; gap: 6px; margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.field label { font-weight: 500; font-size: 0.92rem; display: flex; justify-content: space-between; gap: 12px; }
+.field label output { font-family: var(--font-mono); color: var(--accent); }
+.field input[type="range"] { width: 100%; accent-color: var(--accent); }
+.field .help { font-size: 0.82rem; color: var(--muted); }
+.receipt { font-family: var(--font-mono); font-size: 0.92rem; }
+.receipt .line { display: flex; justify-content: space-between; gap: 12px; padding-block: 8px; border-bottom: 1px dashed var(--line); font-variant-numeric: tabular-nums; }
+.receipt .line span:first-child { color: var(--muted); }
+.receipt .total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 16px; }
+.receipt .total span:first-child { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.receipt .total strong { font-family: var(--font-display); font-size: 2.2rem; color: var(--money); font-variant-numeric: tabular-nums; }
+.receipt .year { text-align: right; color: var(--muted); font-size: 0.85rem; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.calc-note { margin-top: 14px; font-size: 0.85rem; color: var(--muted); font-family: var(--font-body); }
+
+/* quiz */
+.quiz { max-width: 720px; }
+.qhead { display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
+.qtext { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; margin-bottom: 16px; text-wrap: balance; }
+.opts { display: grid; gap: 10px; }
+.opt {
+  font: inherit; text-align: left; padding: 12px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--accent); background: var(--accent-soft); }
+.opt.wrong { border-color: var(--warn); }
+.explain { margin-top: 14px; font-size: 0.93rem; color: var(--muted); min-height: 3em; }
+.qfoot { display: flex; justify-content: flex-end; margin-top: 12px; }
+.score { font-family: var(--font-display); font-size: 2.4rem; color: var(--accent); }
+
+/* checklist */
+.steps { display: grid; gap: 0; max-width: 720px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.step { display: grid; grid-template-columns: 24px 1fr; gap: 14px; padding: 16px 18px; border-top: 1px solid var(--line); cursor: pointer; }
+.step:first-child { border-top: 0; }
+.step input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--accent); }
+.step b { display: block; font-weight: 600; }
+.step span { color: var(--muted); font-size: 0.93rem; }
+.step input:checked + div b { text-decoration: line-through; color: var(--muted); }
+.progress { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; max-width: 720px; margin-bottom: 14px; }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
+
+footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--muted); max-width: 70ch; }
+
+@media (max-width: 760px) {
+  .hero, .calc { grid-template-columns: 1fr; }
+  .basics, .models { grid-template-columns: 1fr; }
+  .prow { grid-template-columns: 1fr; gap: 10px; }
+  .prow .btn { justify-self: start; }
+}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Affiliate marketing, start to first payout</div>
+      <h1>Earn a commission when you send people to the right website.</h1>
+      <p class="lead">Learn how affiliate programs work, compare the networks and brands that run them, estimate what your traffic could earn, and follow a short plan to publish your first link.</p>
+    </div>
+    <div class="flow" aria-label="How an affiliate sale works">
+      <div class="flow-title">One sale, traced</div>
+      <div class="flow-row"><b>1</b><span>You join a program and get a tracking link.</span></div>
+      <div class="flow-row"><b>2</b><span>A reader clicks your link and a cookie records it.</span></div>
+      <div class="flow-row"><b>3</b><span>They buy within the cookie window.</span></div>
+      <div class="flow-row"><b>4</b><span>The site pays you a commission once it clears.</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Sections">
+    <a href="#learn">Basics</a>
+    <a href="#programs">Programs</a>
+    <a href="#calculator">Calculator</a>
+    <a href="#quiz">Quiz</a>
+    <a href="#launch">Launch plan</a>
+  </nav>
+
+  <section id="learn">
+    <div class="sec-head">
+      <div class="eyebrow">Basics</div>
+      <h2>Three parties, one tracking link</h2>
+      <p>You do not hold stock, ship anything or handle support. You publish content that helps someone decide, and the seller pays you for the customers you bring.</p>
+    </div>
+    <div class="basics">
+      <div><h3>Merchant</h3><p>The company that sells the product and sets the commission, the cookie length and the payout rules.</p></div>
+      <div><h3>Affiliate</h3><p>You. A blogger, video creator, newsletter writer or page owner who recommends products to an audience.</p></div>
+      <div><h3>Network</h3><p>A platform such as Awin, CJ or Impact that lists many merchants, tracks clicks and sales, and pays you in one place.</p></div>
+    </div>
+    <div class="models">
+      <div class="model"><b>PAY PER SALE</b><p>A percentage of the order value. Common with stores and software.</p></div>
+      <div class="model"><b>PAY PER LEAD</b><p>A fixed amount when someone signs up, requests a quote or starts a trial.</p></div>
+      <div class="model"><b>RECURRING</b><p>A share of a subscription for as long as the customer stays. Common with software tools.</p></div>
+    </div>
+  </section>
+
+  <section id="programs">
+    <div class="sec-head">
+      <div class="eyebrow">Programs</div>
+      <h2>Where to apply</h2>
+      <p>Start with one network and one or two brands that fit your audience. Each button opens the official sign-up page.</p>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter programs"></div>
+    <div class="plist" id="plist"></div>
+    <p class="note">Commission rates, cookie windows and which countries are accepted change often and differ by program. Read each program's current terms before you apply, and never promote a product you would not recommend to a friend.</p>
+    <div class="cfg">
+      <b>Earning from your own links:</b> after you are approved, paste your personal tracking link for each program into the <code>MY_LINKS</code> list near the bottom of this page's code. The button for that program then sends visitors through your link.
+    </div>
+  </section>
+
+  <section id="calculator">
+    <div class="sec-head">
+      <div class="eyebrow">Calculator</div>
+      <h2>What could your traffic earn?</h2>
+      <p>Move the sliders to match a site you have or plan to build. The numbers start at modest, realistic values.</p>
+    </div>
+    <div class="calc">
+      <div class="panel">
+        <div class="field"><label for="visitors">Monthly visitors <output id="o-visitors"></output></label>
+          <input id="visitors" type="range" min="500" max="200000" step="500" value="10000"></div>
+        <div class="field"><label for="ctr">Visitors who click an affiliate link <output id="o-ctr"></output></label>
+          <input id="ctr" type="range" min="0.5" max="10" step="0.5" value="3">
+          <span class="help">Content that compares products clicks higher than generic posts.</span></div>
+        <div class="field"><label for="conv">Clickers who buy <output id="o-conv"></output></label>
+          <input id="conv" type="range" min="0.5" max="10" step="0.5" value="2"></div>
+        <div class="field"><label for="aov">Average order value <output id="o-aov"></output></label>
+          <input id="aov" type="range" min="10" max="500" step="5" value="60"></div>
+        <div class="field"><label for="rate">Commission rate <output id="o-rate"></output></label>
+          <input id="rate" type="range" min="1" max="50" step="1" value="8"></div>
+      </div>
+      <div class="panel receipt" aria-live="polite">
+        <div class="line"><span>Link clicks</span><span id="r-clicks"></span></div>
+        <div class="line"><span>Sales</span><span id="r-sales"></span></div>
+        <div class="line"><span>Revenue you generate</span><span id="r-rev"></span></div>
+        <div class="total"><span>Your commission / month</span><strong id="r-total"></strong></div>
+        <div class="year" id="r-year"></div>
+        <p class="calc-note">Amounts are in US dollars and are an estimate. Programs often reverse commissions for returns and cancellations.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="quiz">
+    <div class="sec-head">
+      <div class="eyebrow">Quiz</div>
+      <h2>Check what you picked up</h2>
+    </div>
+    <div class="panel quiz" id="quizbox"></div>
+  </section>
+
+  <section id="launch">
+    <div class="sec-head">
+      <div class="eyebrow">Launch plan</div>
+      <h2>Seven steps to your first link</h2>
+      <p>Tick each step as you finish it. Your progress is saved in this browser.</p>
+    </div>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+    <div class="steps" id="steps"></div>
+  </section>
+
+  <footer>
+    Income from affiliate marketing is not guaranteed and most new sites earn little at first. Tell your audience when a link is an affiliate link, and follow the advertising disclosure rules that apply where you and your readers live.
+  </footer>
+</div>
+
+<script>
+/* ---- Put your own tracking links here after a program approves you. ---- */
+var MY_LINKS = {
+  // amazon: "https://www.amazon.com/dp/XXXX?tag=yourtag-20",
+  // hostinger: "https://hostinger.com?REFERRALCODE=yourcode",
+};
+
+var PROGRAMS = [
+  { id: "amazon", name: "Amazon Associates", cat: "Retail", model: "Pay per sale",
+    desc: "Link to almost any product. Low barrier to entry, and readers already trust the checkout. Availability depends on your country.",
+    url: "https://affiliate-program.amazon.com/" },
+  { id: "awin", name: "Awin", cat: "Network", model: "Mixed",
+    desc: "One account gives access to thousands of brands in fashion, travel, finance and more.",
+    url: "https://www.awin.com/" },
+  { id: "cj", name: "CJ Affiliate", cat: "Network", model: "Mixed",
+    desc: "A large network with many well-known retail, travel and service brands.",
+    url: "https://www.cj.com/" },
+  { id: "impact", name: "impact.com", cat: "Network", model: "Mixed",
+    desc: "Hosts programs for many software and subscription brands, including recurring commissions.",
+    url: "https://impact.com/" },
+  { id: "rakuten", name: "Rakuten Advertising", cat: "Network", model: "Pay per sale",
+    desc: "Strong in retail and lifestyle brands, with brand-by-brand applications.",
+    url: "https://rakutenadvertising.com/" },
+  { id: "clickbank", name: "ClickBank", cat: "Digital products", model: "Pay per sale",
+    desc: "A marketplace of digital courses and ebooks. Quality varies a lot, so test products yourself before promoting.",
+    url: "https://www.clickbank.com/" },
+  { id: "shopify", name: "Shopify", cat: "Software", model: "Pay per lead",
+    desc: "Pays when people you refer start a store. Fits content about e-commerce and dropshipping.",
+    url: "https://www.shopify.com/affiliates" },
+  { id: "hostinger", name: "Hostinger", cat: "Software", model: "Pay per sale",
+    desc: "Web hosting. A natural fit for tutorials about building a first website.",
+    url: "https://www.hostinger.com/affiliates" },
+  { id: "canva", name: "Canva", cat: "Software", model: "Pay per lead",
+    desc: "Design tool with a free tier, which makes it easy to recommend to beginners.",
+    url: "https://www.canva.com/affiliates/" },
+  { id: "semrush", name: "Semrush", cat: "Software", model: "Pay per sale",
+    desc: "SEO and marketing software. A good match for audiences that run websites.",
+    url: "https://www.semrush.com/affiliate-program/" },
+  { id: "fiverr", name: "Fiverr", cat: "Services", model: "Pay per sale",
+    desc: "Freelance services marketplace. Works for posts about logos, editing, writing and other tasks people outsource.",
+    url: "https://www.fiverr.com/affiliates" }
+];
+
+var QUIZ = [
+  { q: "A reader clicks your link, leaves, and buys two days later. When do you still get paid?",
+    o: ["Never, only same-day sales count", "If the purchase falls inside the program's cookie window", "Only if they click your link again"], a: 1,
+    e: "The cookie window is how long after the click a purchase is still credited to you. It varies by program." },
+  { q: "Which payment model pays you for as long as a customer keeps a subscription?",
+    o: ["Pay per lead", "Recurring commission", "Flat bounty"], a: 1,
+    e: "Recurring commissions pay a share of each renewal, which makes software subscriptions attractive." },
+  { q: "What should you do when you share an affiliate link?",
+    o: ["Hide that it is an affiliate link", "Tell your audience it is an affiliate link", "Only mention it in the terms page"], a: 1,
+    e: "Clear disclosure near the link builds trust and is required by advertising rules in many countries." },
+  { q: "Your site has 5,000 monthly visitors, a 2% click rate and a 2% buy rate on a $50 order at 10% commission. Roughly what do you earn per month?",
+    o: ["About $10", "About $50", "About $250"], a: 0,
+    e: "5,000 x 2% = 100 clicks. 100 x 2% = 2 sales. 2 x $50 = $100 in orders. 10% of that is $10." },
+  { q: "What usually matters most for earning more from the same traffic?",
+    o: ["Recommending products your audience actually needs", "Adding as many links as possible", "Changing programs every week"], a: 0,
+    e: "Relevance drives clicks and purchases. Piling on links tends to lower trust and conversion." }
+];
+
+var STEPS = [
+  ["Pick one topic", "Choose a subject you can write about repeatedly, such as budget travel, home offices or learning to code."],
+  ["Choose a place to publish", "A simple website, a YouTube channel or a newsletter. Start with one."],
+  ["Apply to one network and two brands", "Use the Programs section. Applications usually ask for your site or channel address."],
+  ["Write three helpful pieces", "Comparisons, how-to guides and honest reviews convert better than lists of links."],
+  ["Add your tracking links and a disclosure", "Place links where the reader is deciding, and state clearly that you may earn a commission."],
+  ["Share and collect first data", "Check clicks and sales in each dashboard weekly and see which pages earn."],
+  ["Improve the best page", "Update your top performer with fresher details, then repeat the process on the next topic."]
+];
+
+function $(id) { return document.getElementById(id); }
+function money(n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function num(n) { return Math.round(n * 10) / 10; }
+
+/* programs */
+var cats = ["All"].concat(PROGRAMS.map(function (p) { return p.cat; }).filter(function (c, i, a) { return a.indexOf(c) === i; }));
+var current = "All";
+function renderPrograms() {
+  var f = $("filters"); f.innerHTML = "";
+  cats.forEach(function (c) {
+    var b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.textContent = c;
+    b.setAttribute("aria-pressed", c === current ? "true" : "false");
+    b.onclick = function () { current = c; renderPrograms(); };
+    f.appendChild(b);
+  });
+  var list = $("plist"); list.innerHTML = "";
+  PROGRAMS.filter(function (p) { return current === "All" || p.cat === current; }).forEach(function (p) {
+    var mine = MY_LINKS[p.id];
+    var row = document.createElement("div"); row.className = "prow";
+    var a = document.createElement("div");
+    var h = document.createElement("h3"); h.textContent = p.name; a.appendChild(h);
+    var t1 = document.createElement("span"); t1.className = "tag"; t1.textContent = p.cat;
+    var t2 = document.createElement("span"); t2.className = "tag m"; t2.textContent = p.model;
+    a.appendChild(t1); a.appendChild(t2);
+    var d = document.createElement("p"); d.textContent = p.desc;
+    var l = document.createElement("a"); l.className = "btn"; l.target = "_blank"; l.rel = "noopener sponsored";
+    l.href = mine || p.url; l.textContent = mine ? "Visit " + p.name : "Apply to " + p.name;
+    row.appendChild(a); row.appendChild(d); row.appendChild(l);
+    list.appendChild(row);
+  });
+}
+
+/* calculator */
+function calc() {
+  var v = +$("visitors").value, ctr = +$("ctr").value, conv = +$("conv").value, aov = +$("aov").value, rate = +$("rate").value;
+  $("o-visitors").textContent = v.toLocaleString("en-US");
+  $("o-ctr").textContent = ctr + "%";
+  $("o-conv").textContent = conv + "%";
+  $("o-aov").textContent = "$" + aov;
+  $("o-rate").textContent = rate + "%";
+  var clicks = v * ctr / 100, sales = clicks * conv / 100, rev = sales * aov, com = rev * rate / 100;
+  $("r-clicks").textContent = Math.round(clicks).toLocaleString("en-US");
+  $("r-sales").textContent = num(sales).toLocaleString("en-US");
+  $("r-rev").textContent = money(rev);
+  $("r-total").textContent = money(com);
+  $("r-year").textContent = money(com * 12) + " per year at this pace";
+}
+["visitors", "ctr", "conv", "aov", "rate"].forEach(function (id) { $(id).addEventListener("input", calc); });
+
+/* quiz */
+var qi = 0, score = 0, answered = false;
+function renderQuiz() {
+  var box = $("quizbox"); box.innerHTML = "";
+  if (qi >= QUIZ.length) {
+    var s = document.createElement("div"); s.className = "score"; s.textContent = score + " / " + QUIZ.length;
+    var p = document.createElement("p"); p.style.margin = "8px 0 16px";
+    p.textContent = score >= 4 ? "You have the basics. Move on to the launch plan." : "Re-read the basics, then try again.";
+    var b = document.createElement("button"); b.className = "btn ghost"; b.type = "button"; b.textContent = "Restart quiz";
+    b.onclick = function () { qi = 0; score = 0; renderQuiz(); };
+    box.appendChild(s); box.appendChild(p); box.appendChild(b); return;
+  }
+  var q = QUIZ[qi]; answered = false;
+  var head = document.createElement("div"); head.className = "qhead";
+  head.innerHTML = "<span>Question " + (qi + 1) + " of " + QUIZ.length + "</span><span>Score " + score + "</span>";
+  var t = document.createElement("div"); t.className = "qtext"; t.textContent = q.q;
+  var opts = document.createElement("div"); opts.className = "opts";
+  var ex = document.createElement("div"); ex.className = "explain"; ex.setAttribute("aria-live", "polite");
+  var foot = document.createElement("div"); foot.className = "qfoot";
+  q.o.forEach(function (txt, i) {
+    var b = document.createElement("button"); b.className = "opt"; b.type = "button"; b.textContent = txt;
+    b.onclick = function () {
+      if (answered) return; answered = true;
+      if (i === q.a) { score++; b.classList.add("right"); } else { b.classList.add("wrong"); opts.children[q.a].classList.add("right"); }
+      Array.prototype.forEach.call(opts.children, function (c) { c.disabled = true; });
+      ex.textContent = q.e;
+      var n = document.createElement("button"); n.className = "btn"; n.type = "button";
+      n.textContent = qi === QUIZ.length - 1 ? "See score" : "Next question";
+      n.onclick = function () { qi++; renderQuiz(); };
+      foot.appendChild(n); n.focus();
+    };
+    opts.appendChild(b);
+  });
+  box.appendChild(head); box.appendChild(t); box.appendChild(opts); box.appendChild(ex); box.appendChild(foot);
+}
+
+/* checklist */
+var done = {};
+try { done = JSON.parse(localStorage.getItem("cm-steps") || "{}") || {}; } catch (e) { done = {}; }
+function saveSteps() { try { localStorage.setItem("cm-steps", JSON.stringify(done)); } catch (e) {} }
+function renderSteps() {
+  var box = $("steps"); box.innerHTML = "";
+  STEPS.forEach(function (s, i) {
+    var lab = document.createElement("label"); lab.className = "step"; lab.htmlFor = "step" + i;
+    var cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "step" + i; cb.checked = !!done[i];
+    cb.onchange = function () { done[i] = cb.checked; saveSteps(); updateBar(); };
+    var d = document.createElement("div");
+    var b = document.createElement("b"); b.textContent = s[0];
+    var sp = document.createElement("span"); sp.textContent = s[1];
+    d.appendChild(b); d.appendChild(sp);
+    lab.appendChild(cb); lab.appendChild(d); box.appendChild(lab);
+  });
+  updateBar();
+}
+function updateBar() {
+  var n = STEPS.filter(function (_, i) { return done[i]; }).length;
+  $("bar").style.width = (n / STEPS.length * 100) + "%";
+}
+
+renderPrograms(); calc(); renderQuiz(); renderSteps();
+</script>
